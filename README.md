@@ -454,7 +454,7 @@ You can use Ruby's `require` functionality to assemble your files, or you can pr
 Hug and a beer for anyone submitting pull requests!
 
 1. Fork it
-2. Fix my bugs. :)
+2. Fix my bugs or add new features with tests (please). :)
 3. Create your feature branch (`git checkout -b my-new-feature`)
 4. Commit your changes (`git commit -am 'Add some feature'`)
 5. Push to the branch (`git push origin my-new-feature`)
