@@ -25,9 +25,9 @@ rule_set :sanity_check do
    '192.168.0.0/16',
    '224.0.0.0/4',
    '240.0.0.0/5'
- ].each do |interal_ip_range|
+ ].each do |internal_ip_range|
    drop :chain => 'valid-src',
-        :local_address => interal_ip_range,
+        :local_address => internal_ip_range,
         :comment => "drop private ip talking to external interface"
  end
 
