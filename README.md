@@ -6,6 +6,10 @@ Trying to maintain a set of interconnected firewall rules is pretty annoying, ho
 
 At the moment, Asbestos only supports IPTables (the filter table, specifically), but it can be easily expanded for other firewall types.
 
+
+[![Build Status](https://travis-ci.org/koudelka/asbestos.png)](https://travis-ci.org/koudelka/asbestos)
+
+
 ## Installation
 
 Simply:
