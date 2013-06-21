@@ -1,0 +1,112 @@
+#!/usr/bin/env ruby
+
+require 'asbestos'
+require 'optparse'
+require 'pathname'
+
+options = {
+  :host => Asbestos.hostname
+}
+
+parser = \
+  OptionParser.new do |o|
+    o.banner = "Usage: #{o.program_name} COMMAND [OPTIONS] FILES"
+    o.separator ""
+    o.separator "Commands"
+    o.separator "  rules: generates firewall rules for the given host"
+    #o.separator "  graph: geneates a graphviz visualization of your topology"
+    o.separator ""
+    o.separator "Options"
+
+    o.on("-h", "--host HOST","the host to generate rules for") do |host|
+      options[:host] = host
+    end
+
+    o.on("-D","--debug","dumps lots of information about your topology's hosts/templates/services") do
+      $ASBESTOSDEBUG = true
+    end
+
+    o.on("--debug-stderr","suppresses the line-numbered output on stderr") do
+      options[:stderr] = true
+    end
+
+    o.on("--help","displays this help information") do
+      puts o
+    end
+
+    o.separator ""
+    o.separator "Examples"
+    o.separator "  Generate rules for the current host:"
+    o.separator "  $ #{o.program_name} rules my_services.rb my_hosts.rb"
+    o.separator ""
+    o.separator "  Generate rules for an arbitrary host:"
+    o.separator "  $ #{o.program_name} rules --host some_host my_services.rb my_hosts.rb"
+    o.separator ""
+    o.separator "DSL Examples"
+    o.separator "  Please see #{Asbestos::HOMEPAGE}"
+
+    o.parse!
+  end
+
+command = \
+  if ARGV.first.end_with? '.rb'
+    'rules'
+  else
+    ARGV.shift
+  end
+
+files = ARGV
+
+files.each do |file|
+  require Pathname.new(file).realpath.to_s
+end
+
+if $ASBESTOSDEBUG
+  $stderr.puts "-"*10 + "Asbestos Debug Enabled--" + "-"*10
+  $stderr.puts
+  $stderr.puts "Known RuleSets #{Asbestos::RuleSet.all.keys}"
+  $stderr.puts "Known Services #{Asbestos::Service.all.keys}"
+  $stderr.puts
+  $stderr.puts "Dumping all Hosts:"
+  $stderr.puts
+  Asbestos::Host.all.each do |_, host|
+    $stderr.puts "-"*20 + host.name.to_s + "-"*20
+    $stderr.puts host.debug
+    $stderr.puts host.rules
+    $stderr.puts
+  end
+end
+
+
+
+case command
+  when "rules"
+    if $ASBESTOSDEBUG
+      $stderr.puts '-' * 20
+      $stderr.puts "Running command 'rules' for host #{options[:host]}"
+      $stderr.puts '-' * 20
+    end
+
+    Host.all[options[:host]].tap do |host|
+      unless host
+        puts "Asbestos doesn't know about host '#{options[:host]}'!"
+        puts
+        puts "You've defined hosts:"
+        Host.all.keys.each do |name|
+          puts "  - #{name}"
+        end
+        puts
+        puts "Try `asbestos rules --host #{Host.all.keys.first} #{files.join(' ')}`"
+        exit
+      end
+      host.rules.tap do |rules|
+        rules.each_with_index do |rule, line_number|
+          puts rule
+          $stderr.puts "#{line_number.to_s.rjust(rules.length.to_s.length)}: #{rule}" if options[:stderr]
+        end
+      end
+    end
+  #when "graph"
+  else
+    puts parser
+end
