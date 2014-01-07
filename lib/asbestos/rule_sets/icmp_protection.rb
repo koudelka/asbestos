@@ -1,11 +1,6 @@
 
 rule_set :icmp_protection do
 
-  accept :chain     => :output,
-         :protocol  => :icmp,
-         :icmp_type => 'echo-request',
-         :comment   => "allow us to ping others"
-
   accept :protocol  => :icmp,
          :icmp_type => 'echo-reply',
          :comment   => "allow us to receive ping responses"
