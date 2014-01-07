@@ -15,7 +15,7 @@ rule_set :icmp_protection do
              :icmp_type => 'echo-request',
              :interface => interface,
              :remote_address => address,
-             :limit   => '22s',
+             :limit   => '1/s',
              :comment => "allow icmp from #{address}"
     end
 

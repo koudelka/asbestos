@@ -337,7 +337,7 @@ rule_set :icmp_protection do
              :icmp_type => 'echo-request',
              :interface => interface,
              :remote_address => address,
-             :limit   => '22s',
+             :limit   => '1/s',
              :comment => "allow icmp from #{address}"
     end
 
@@ -363,9 +363,9 @@ Results in:
 # Begin [icmp_protection]
 -A OUTPUT -j ACCEPT -p icmp --icmp-type echo-request -m comment --comment "allow us to ping others"
 -A INPUT -j ACCEPT -p icmp --icmp-type echo-reply -m comment --comment "allow us to receive ping responses"
--A INPUT -j ACCEPT -i eth1 -p icmp -s pinger.monitoringservice.com -m limit --limit 22s --icmp-type echo-request -m comment --comment "allow icmp from pinger.monitoringservice.com on eth1"
+-A INPUT -j ACCEPT -i eth1 -p icmp -s pinger.monitoringservice.com -m limit --limit 1/s --icmp-type echo-request -m comment --comment "allow icmp from pinger.monitoringservice.com on eth1"
 -A INPUT -j DROP -i eth1 -p icmp -m comment --comment "drop any icmp packets that haven't been explicitly allowed on eth1"
--A INPUT -j ACCEPT -i eth1:0 -p icmp -s pinger.monitoringservice.com -m limit --limit 22s --icmp-type echo-request -m comment --comment "allow icmp from pinger.monitoringservice.com on eth1:0"
+-A INPUT -j ACCEPT -i eth1:0 -p icmp -s pinger.monitoringservice.com -m limit --limit 1/s --icmp-type echo-request -m comment --comment "allow icmp from pinger.monitoringservice.com on eth1:0"
 -A INPUT -j DROP -i eth1:0 -p icmp -m comment --comment "drop any icmp packets that haven't been explicitly allowed on eth1:0"
 # End [icmp_protection]
 ```
