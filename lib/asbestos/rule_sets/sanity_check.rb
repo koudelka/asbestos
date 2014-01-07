@@ -3,7 +3,7 @@ rule_set :sanity_check do
  chain 'valid-dst'
 
  # Require all packets to or from the internet to go through sanity checks.
- interfaces[:external].each do |iface|
+ interfaces[:external].each do |interface|
    rule :chain  => :input,
         :action => 'valid-src',
         :interface => interface,
@@ -12,7 +12,7 @@ rule_set :sanity_check do
    rule :chain  => :output,
         :action => 'valid-dst',
         :interface => interface,
-        :comment => "all traffic from internet goes through sanity check"
+        :comment => "all traffic to internet goes through sanity check"
  end
 
  # Private interface addresses should never be talking to our external IP.
