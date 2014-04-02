@@ -119,19 +119,19 @@ class Asbestos::Host
   # end
   #
   def interface(tag, if_names, address = nil, &block)
-    if_names = [*if_names]
-    raise "single address, #{address}, given for multiple interfaces, #{if_names}, on host #{name}" if if_names.length > 1 && address
+    interfaces = [*@interfaces[tag], *if_names].compact
+    raise "single address, #{address}, given for multiple interfaces, #{interfaces}, on host #{name}" if interfaces.length > 1 && address
 
-    @interfaces[tag] = if_names
+    @interfaces[tag] = interfaces
 
     # determine the address for each interface
-    if_names.each do |if_name|
+    interfaces.each do |if_name|
       new_address = \
         if !address
           if block_given? 
             yield(self, if_name)
           else
-            if if_names.length > 1
+            if interfaces.length > 1
               "#{name}_#{tag}_#{if_name}"
             else
               "#{name}_#{tag}"
@@ -140,7 +140,7 @@ class Asbestos::Host
         else
           address
         end
-      @addresses[if_name] ||= new_address
+      @addresses[if_name] = new_address
     end
 
   end

@@ -79,6 +79,15 @@ describe Asbestos::Host do
         Host['hostname'].call.interfaces[:some_tag].should == [:eth0, :eth1]
       end
 
+      it "should add interfaces to the tag when called more than once" do
+        host 'hostname' do
+          interface :some_tag, :eth0
+          interface :some_tag, :eth1
+        end
+
+        Host['hostname'].call.interfaces[:some_tag].should == [:eth0, :eth1]
+      end
+
       context "generating addresses" do
         context "defaults" do
           it "should generate defaults for singular interfaces" do
