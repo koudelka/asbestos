@@ -119,7 +119,7 @@ class Asbestos::Host
   # end
   #
   def interface(tag, if_names, address = nil, &block)
-    interfaces = [*@interfaces[tag], *if_names].compact
+    interfaces = [*@interfaces[tag], *if_names].compact.uniq
     raise "single address, #{address}, given for multiple interfaces, #{interfaces}, on host #{name}" if interfaces.length > 1 && address
 
     @interfaces[tag] = interfaces
