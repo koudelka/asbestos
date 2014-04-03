@@ -40,7 +40,7 @@ class Asbestos::Host
     Asbestos.with_indifferent_access! @interfaces
     Asbestos.with_indifferent_access! @addresses
 
-    if Asbestos.hostname.to_sym == @name
+    if generating_rules_for_current_host?
       Asbestos.interfaces.each do |if_name, info|
         @addresses[if_name] = info[:inet_addr]
       end
@@ -56,7 +56,6 @@ class Asbestos::Host
 
     self.class.all[name] = self
   end
-
 
   def debug
     [
@@ -83,6 +82,13 @@ class Asbestos::Host
   #
   # DSL ------------------------------------------------------------------------------
   #
+
+  #
+  # Indicates if Asbestos is generating rules for the host it's running on
+  #
+  def generating_rules_for_current_host?
+    Asbestos.hostname.to_s == @name.to_s
+  end
 
   #
   # Places this host in a named group

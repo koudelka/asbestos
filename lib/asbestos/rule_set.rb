@@ -39,7 +39,7 @@ class Asbestos::RuleSet
   #
   # These host functions are useful when building rules.
   #
-  def_delegators :@host, :chain, :interfaces, :command, :addresses
+  def_delegators :@host, :chain, :interfaces, :command, :addresses, :generating_rules_for_current_host?
 
   #
   # Records a literal firewall command for this host, ignoring firewall type (iptables, ipfw, etc)
