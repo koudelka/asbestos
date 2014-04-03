@@ -9,7 +9,19 @@ rule_set :accept_from_self do
   end
 
   # Accept anything from the interface to itself.
-  addresses.each do |interface, address|
+  iface_addresses = \
+    if !generating_rules_for_current_host?
+      # TODO: replace this with #collect#to_h in ruby 2.x
+      Hash.new.tap do |hash|
+        Asbestos.interfaces.each do |interface, addresses|
+          hash[interface] = addresses[:inet_addr]
+        end
+      end
+    else
+      self.addresses
+    end
+
+  iface_addresses.each do |interface, address|
     next if interface == :loopback # handled by above rule
 
     accept :local_address  => address,
